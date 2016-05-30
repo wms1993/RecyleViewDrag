@@ -6,7 +6,7 @@ import android.os.Vibrator;
 
 /**
  * 手机震动工具类
- * @author Administrator
+ * @author 王梦思
  * 使用必须添加权限：<uses-permission android:name="android.permission.VIBRATE" />
  */
 public class VibratorUtil {

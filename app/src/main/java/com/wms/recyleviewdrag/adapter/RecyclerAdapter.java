@@ -1,23 +1,25 @@
 package com.wms.recyleviewdrag.adapter;
 
 import android.content.Context;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.wms.recyleviewdrag.entity.Item;
 import com.liaoinstan.dragrecyclerview.R;
+import com.wms.recyleviewdrag.entity.Item;
 import com.wms.recyleviewdrag.helper.MyItemTouchCallback;
 
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/4/12.
+ * Created by 王梦思 on 2016/4/12.
  */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> implements MyItemTouchCallback.ItemTouchAdapter {
 
@@ -25,7 +27,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private int src;
     private List<Item> results;
 
-    public RecyclerAdapter(int src,List<Item> results){
+    public RecyclerAdapter(int src, List<Item> results) {
         this.results = results;
         this.src = src;
     }
@@ -50,7 +52,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     @Override
     public void onMove(int fromPosition, int toPosition) {
-        if (fromPosition==results.size()-1 || toPosition==results.size()-1){
+        if (fromPosition == results.size() - 1 || toPosition == results.size() - 1) {
             return;
         }
         if (fromPosition < toPosition) {
@@ -71,7 +73,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         notifyItemRemoved(position);
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public void setDragListener(OnDragListener dragListener) {
+        this.dragListener = dragListener;
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView textView;
         public ImageView imageView;
@@ -81,10 +87,30 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             int width = wm.getDefaultDisplay().getWidth();
             ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
-            layoutParams.height = width/4;
+            layoutParams.height = width / 4;
             itemView.setLayoutParams(layoutParams);
             textView = (TextView) itemView.findViewById(R.id.item_text);
             imageView = (ImageView) itemView.findViewById(R.id.item_img);
+            imageView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    //如果按下
+                    if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                        //回调RecyclerListFragment中的startDrag方法
+                        //让mItemTouchHelper执行拖拽操作
+                        if (dragListener != null) {
+                            dragListener.drag(MyViewHolder.this);
+                        }
+                    }
+                    return false;
+                }
+            });
         }
     }
+
+    public interface OnDragListener {
+        void drag(RecyclerView.ViewHolder holder);
+    }
+
+    private OnDragListener dragListener;
 }

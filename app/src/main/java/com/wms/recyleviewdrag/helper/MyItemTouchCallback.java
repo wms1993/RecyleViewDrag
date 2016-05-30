@@ -8,12 +8,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 /**
- * Created by Administrator on 2016/4/12.
+ * Created by 王梦思 on 2016/4/12.
  */
 public class MyItemTouchCallback extends ItemTouchHelper.Callback {
 
     private ItemTouchAdapter itemTouchAdapter;
-    public MyItemTouchCallback(ItemTouchAdapter itemTouchAdapter){
+
+    public MyItemTouchCallback(ItemTouchAdapter itemTouchAdapter) {
         this.itemTouchAdapter = itemTouchAdapter;
     }
 
@@ -37,8 +38,8 @@ public class MyItemTouchCallback extends ItemTouchHelper.Callback {
         } else {
             final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
             //final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-            final int swipeFlags = 0;
-            return makeMovementFlags(dragFlags, swipeFlags);
+//            final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+            return makeMovementFlags(dragFlags, 0);
         }
     }
 
@@ -46,7 +47,7 @@ public class MyItemTouchCallback extends ItemTouchHelper.Callback {
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
         int fromPosition = viewHolder.getAdapterPosition();//得到拖动ViewHolder的position
         int toPosition = target.getAdapterPosition();//得到目标ViewHolder的position
-        itemTouchAdapter.onMove(fromPosition,toPosition);
+        itemTouchAdapter.onMove(fromPosition, toPosition);
         return true;
     }
 
@@ -93,7 +94,7 @@ public class MyItemTouchCallback extends ItemTouchHelper.Callback {
         if (bkcolor != -1) viewHolder.itemView.setBackgroundColor(bkcolor);
         //viewHolder.itemView.setBackgroundColor(0);
 
-        if (onDragListener!=null){
+        if (onDragListener != null) {
             onDragListener.onFinishDrag();
         }
     }
@@ -102,16 +103,19 @@ public class MyItemTouchCallback extends ItemTouchHelper.Callback {
     private int bkcolor = -1;
 
     private OnDragListener onDragListener;
+
     public MyItemTouchCallback setOnDragListener(OnDragListener onDragListener) {
         this.onDragListener = onDragListener;
         return this;
     }
-    public interface OnDragListener{
+
+    public interface OnDragListener {
         void onFinishDrag();
     }
 
     public interface ItemTouchAdapter {
-        void onMove(int fromPosition,int toPosition);
+        void onMove(int fromPosition, int toPosition);
+
         void onSwiped(int position);
     }
 }
